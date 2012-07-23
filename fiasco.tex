@@ -1,30 +1,42 @@
-\section{Übertragung auf Fiasco}
+\section{Application to Fiasco}
 
-\subsection{Konfiguration \& Anpassung von Fiasco}
+\subsection{Configuration of \& modifications to Fiasco}
+
+\paragraph{\texttt{regparm} and \texttt{nonnull} attributes}
+
+\todo{fill}
+
+\paragraph{GNU89 vs C99 inlining}
+
+\todo{fill}
+
+\paragraph{Variable-length arrays}
+
+\todo{fill}
 
 \paragraph{Inline Assembly}
 
-Der in LLVM integrierte Assembler führte an mehreren Stellen zu Problemen. Auf
-seine Verwendung wurde später verzichtet.
+LLVM's integrated assembler led to problems in several areas and was later
+deactivated. The following section lists modifications that were initially
+attempted to allow its use.
 
-In \texttt{/boot/ia32/boot\_idt.S} verwendet Fiasco das GNU
-Assembler-spezi\-fi\-sche Feature der
-\emph{Sub-Sections}~\cite{gas-subsections}, welches von LLVM nicht unterstützt
-wird. Auf Hinweis von Adam Lackorzyński wurde diese Unterteilung zunächst
-aufgehoben, was aber im späteren Bootvorgang zu neuen Fehlern führte.
+Fiasco uses the \emph{sub-sections} feature specific to the GNU
+assembler~\cite{gas-subsections} in \texttt{/boot\-/ia32\-/boot\_idt.S}, which
+is currently not supported by LLVM. The offending parts were changed to normal
+section statements as recommended by \todo{mentions like this OK?}Adam
+Lackorzyński, which led to new errors upon booting.
 
-Wie in \cite[Inline assembly]{clang-compatibility} beschrieben behandelt der
-LLVM Assembler uneindeutige x86-Instruktionen, welchen das die Bitbreite der
-Operation bestimmende Suffix fehlt, als Fehler. Die Verwendung dieser
-Instruktionen wurde ebenfalls an den entsprechenden Stellen korrigiert.
+The documentation on Clang's compatibility with current language standards and
+popular compiler extensions~\cite[Inline assembly]{clang-compatibility}
+explains why the integrated assembler does not accept ambiguous x86
+instructions whose sizes can't be inferred from their operands; their handling
+by the GNU assembler is considered a bug. Instructions with the appropriate
+suffix were used where applicable.
 
-\todo{Problem genauer beschreiben}
-Ein weiteres Problem trat bei der Makroexpansion in
-\texttt{/kern/ia32/32\-/en\-try.S} und \texttt{/kern/ia32/32\-/entry-native.S} auf.
+There were \todo{elaborate}further problems concerning macro expansion in
+\texttt{/kern/ia32/32\-/en\-try.S} and \texttt{/kern/ia32/32\-/entry-native.S}.
 
-Nach einem Hinweis auf der Clang-Mailingliste wurde die Verwendung des
-integrierten Assemblers danach mittels der Option
-\texttt{-no-integrated-as}~\cite{manclang} vorerst ausgesetzt und auf den GNU
-Assembler zurückgegriffen. Die in Assembler formulierten Teile von Fiasco
-bedurften damit keiner Anpassung, die bisher erfolgten Änderungen wurden
-rückgängig gemacht.
+The use of the integrated assembler was then discontinued via the
+\texttt{-no-integrated-as} option~\cite{manclang} in favour of the GNU
+assembler with which the problematic parts of Fiasco are known to work.
+All modifications made to this point were reverted.
