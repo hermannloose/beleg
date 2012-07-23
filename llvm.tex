@@ -1,0 +1,75 @@
+\section{Die LLVM Compilerarchitektur}
+
+\begin{leftbar}
+  \begin{itemize}
+    \item Wie groß soll bzw. darf das ausfallen?
+  \end{itemize}
+\end{leftbar}
+
+\subsection{Überblick}
+
+\begin{leftbar}
+  \begin{itemize}
+    \item 1-2 Sätze, wer, wo, wann, was
+    \item Frontends, IR, Backends, Tools beschreiben
+    \item IR genauer ausführen, Basic Blocks vs. Funktionen
+  \end{itemize}
+\end{leftbar}
+
+\todo[inline]{aufgrund der vielen Fachbegriffe insgesamt evtl. doch Englisch?}
+
+\begin{leftbar}
+\subsection{Analysis \& Transformations}
+
+Platform and language agnostic analysis and transformations on LLVM bitcode and
+assembly during optimization are implemented by so-called
+\emph{Passes}~\cite{llvm-passes}. These exist at different granularities,
+handling complete modules, individual functions, loop regions, basic blocks
+etc. with corresponding constraints on which structures they can inspect or
+modify.
+\end{leftbar}
+
+\subsection{Analyse \& Transformationen}
+
+Analyse und Transformationen von LLVM Bitcode bzw. Assembly im Rahmen der
+Optimierung werden sprach- und plattformunabhängig durch sogenannte
+\emph{Passes}~\cite{llvm-passes} realisiert. Diese werden für bestimmte
+Strukturebenen formuliert, betrachten z.B. komplette Module, einzelne
+Funktionen, Schleifenregionen oder Basic Blocks und unterliegen entsprechenden
+Beschränkungen. So sind im Allgemeinen Modifikationen außerhalb der aktuell
+betrachteten Funktion etc.  verboten, um dem \emph{PassManager} eine möglichst
+effiziente Anwendung der gewünschten Passes auf das gerade bearbeitete Modul zu
+ermöglichen.
+
+Zur Ausnutzung von örtlicher Lokalität wird dabei z.B. eine Menge von
+\emph{FunctionPass}es zunächst der Reihe nach für eine einzelne Funktion
+ausgeführt, bevor die nächste Funktion betrachtet wird, wobei keine Aussage
+über die Folge der Funktionen getroffen wird.
+
+Passes können Abhängigkeiten zu anderen Passes deklarieren, die z.B. Analysen
+zum aktuell betrachteten Code liefern oder benötigte Vorbedingungen herstellen.
+Zusätzlich müssen Passes explizit angeben, welche eventuell vorangegangenen
+Passes ihre Gültigkeit \emph{behalten}—indem sie betroffene Analysewerte unter
+Umständen selbst aktualisieren—da vom PassManager ansonsten vermeintlich
+ungültig gewordene Analysen erneut durchgeführt werden, was bei Nichtbeachtung
+zu Performanceeinbußen führen kann.
+
+Die Realisierung eigener Analysen und Transformationen beschränkt sich damit
+auf die Implementierung einer Unterklasse des gewünschten
+Passtyps.~\cite{writing-passes}
+
+\subsection{Besonderheiten im Bezug auf CFCSS}
+
+CFCSS baut auf einem einzelnen, funktionsübergreifenden Kontrollflussgraphen
+auf. Dabei terminieren sowohl Sprunginstruktionen als auch Funktionsaufrufe und
+zugehörige \todo{ist dieser Sprachmischmasch legitim?}Returns einen Basic
+Block. Kanten im CFG existieren jeweils zwischen Quelle und Ziel, somit auch
+von Basic Blocks in der Mitte einer Funktion zum ersten Basic Block einer
+anderen.
+
+\texttt{call}-Instruktionen in LLVM stehen hingegen nicht am Ende eines Basic
+Blocks, zugleich beschränkt sich der CFG jeweils auf die aktuelle Funktion. Als
+Nachfolger eines Basic Blocks tauchen entsprechend nur die möglichen Ziele
+seiner terminierenden Instruktion auf—neben Sprüngen auch in LLVM Assembly
+nativ abgebildete \texttt{switch}-Statements—und keine Basic Blocks von
+aufgerufenen Funktionen.

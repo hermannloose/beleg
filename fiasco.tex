@@ -1,0 +1,30 @@
+\section{Übertragung auf Fiasco}
+
+\subsection{Konfiguration \& Anpassung von Fiasco}
+
+\paragraph{Inline Assembly}
+
+Der in LLVM integrierte Assembler führte an mehreren Stellen zu Problemen. Auf
+seine Verwendung wurde später verzichtet.
+
+In \texttt{/boot/ia32/boot\_idt.S} verwendet Fiasco das GNU
+Assembler-spezi\-fi\-sche Feature der
+\emph{Sub-Sections}~\cite{gas-subsections}, welches von LLVM nicht unterstützt
+wird. Auf Hinweis von Adam Lackorzyński wurde diese Unterteilung zunächst
+aufgehoben, was aber im späteren Bootvorgang zu neuen Fehlern führte.
+
+Wie in \cite[Inline assembly]{clang-compatibility} beschrieben behandelt der
+LLVM Assembler uneindeutige x86-Instruktionen, welchen das die Bitbreite der
+Operation bestimmende Suffix fehlt, als Fehler. Die Verwendung dieser
+Instruktionen wurde ebenfalls an den entsprechenden Stellen korrigiert.
+
+\todo{Problem genauer beschreiben}
+Ein weiteres Problem trat bei der Makroexpansion in
+\texttt{/kern/ia32/32\-/en\-try.S} und \texttt{/kern/ia32/32\-/entry-native.S} auf.
+
+Nach einem Hinweis auf der Clang-Mailingliste wurde die Verwendung des
+integrierten Assemblers danach mittels der Option
+\texttt{-no-integrated-as}~\cite{manclang} vorerst ausgesetzt und auf den GNU
+Assembler zurückgegriffen. Die in Assembler formulierten Teile von Fiasco
+bedurften damit keiner Anpassung, die bisher erfolgten Änderungen wurden
+rückgängig gemacht.

@@ -1,0 +1,25 @@
+\section{Implementierung}
+
+Für die Implementierung der \todo{checken, dass die dann auch genannt
+wurden}genannten Passes wurde ein \emph{out-of-source} LLVM-Pro\-jekt außerhalb
+des LLVM-Repository begonnen. Die so erstellten Objektdateien können von
+\texttt{opt} und \texttt{llvm-ld} jeweils mittels der Option
+\texttt{-load=\textit{object-file}} eingebunden und die enthaltenen Passes
+verwendet werden.
+
+\begin{leftbar}
+  \begin{itemize}
+    \item LLVM-Projekte \emph{out-of-source}
+  \end{itemize}
+\end{leftbar}
+
+\subsection{Probleme bei der Verwendung von LLVM}
+
+\begin{leftbar}
+  \begin{itemize}
+    \item LLVM ist ein \emph{optimierender} Compiler
+    \item Annahme: Hardware arbeitet perfekt
+    \item Constant Folding
+    \item Dead Code Elimination
+  \end{itemize}
+\end{leftbar}

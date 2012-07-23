@@ -1,4 +1,4 @@
-all:
+thesis:
 	xelatex paper.tex
 	bibtex paper.aux
 	xelatex paper.tex
