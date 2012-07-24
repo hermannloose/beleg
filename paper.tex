@@ -1,6 +1,5 @@
-\documentclass[11pt,a4paper]{article}
+\documentclass[11pt,a4paper,draft]{report}
 \usepackage{fontspec}
-\usepackage{ngerman}
 \usepackage[top=3cm,left=3.5cm,right=3.5cm,bottom=3cm]{geometry}
 
 \usepackage{amsmath}
@@ -11,13 +10,24 @@
 \usepackage[htt]{hyphenat}
 \usepackage{listings}
 \usepackage{soul}
-\usepackage[textsize=small,textwidth=3cm]{todonotes}
+
+\usepackage[
+  colorinlistoftodos,
+  obeyDraft,
+  textsize=small,
+  textwidth=3cm
+]{todonotes}
+
 \usepackage{url}
 
 \setromanfont{Charis SIL}
 \setmonofont{Courier 10 Pitch}
 
-\title{Compilergeneriertes Control-Flow Integrity Checking für Kernelcode}
+\overfullrule=5pt
+
+\newcommand{\tobewritten}[2][noinline]{\todo[color=red!60,#1]{#2}}
+\newcommand{\needspolish}[2][noinline]{\todo[color=green!40,#1]{#2}}
+\newcommand{\bjoern}[2][noinline]{\todo[color=blue!60,#1]{#2}}
 \author{Hermann Loose}
 
 \begin{document}
@@ -40,12 +50,13 @@
 
 \tableofcontents
 
-\renewcommand{\labelitemi}{$\square$}
-\renewcommand{\labelitemii}{$\square$}
-\renewcommand{\labelitemiii}{$\square$}
-\renewcommand{\labelitemiv}{$\square$}
+\newpage
+
+\listoftodos
 
 \newpage
+
+\chapter{Introduction}
 
 \input{introduction.tex}
 
@@ -53,17 +64,26 @@
 
 \input{llvm.tex}
 
+\chapter{Design}
+
 \input{design.tex}
+
+\chapter{Implementation}
 
 \input{implementation.tex}
 
 \input{fiasco.tex}
 
+\chapter{Evaluation}
+
 \input{measurements.tex}
+
+\chapter{Conclusion}
 
 \input{conclusion.tex}
 
-\newpage
+\appendix
+
 \bibliographystyle{unsrt}
 \bibliography{paper}
 

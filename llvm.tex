@@ -1,24 +1,23 @@
-\section{Die LLVM Compilerarchitektur}
+\section{The LLVM compiler infrastructure}
 
-\begin{leftbar}
-  \begin{itemize}
-    \item Wie groß soll bzw. darf das ausfallen?
-  \end{itemize}
-\end{leftbar}
+\subsection{Overview}
 
-\subsection{Überblick}
+\subsection{LLVM Assembly \& Bitcode}
 
-\begin{leftbar}
-  \begin{itemize}
-    \item 1-2 Sätze, wer, wo, wann, was
-    \item Frontends, IR, Backends, Tools beschreiben
-    \item IR genauer ausführen, Basic Blocks vs. Funktionen
-  \end{itemize}
-\end{leftbar}
+\tobewritten[inline]{fill}
 
-\todo[inline]{aufgrund der vielen Fachbegriffe insgesamt evtl. doch Englisch?}
+\subsection{Tools}
 
-\begin{leftbar}
+\tobewritten[inline]{fill}
+
+\todo[inline]{figure out how much of this is needed}
+
+\begin{description}
+    \item[clang] \todo{fill}
+    \item[opt] \todo{fill}
+    \item[llvm-ld] \todo{fill}
+\end{description}
+
 \subsection{Analysis \& Transformations}
 
 Platform and language agnostic analysis and transformations on LLVM bitcode and
@@ -27,7 +26,6 @@ assembly during optimization are implemented by so-called
 handling complete modules, individual functions, loop regions, basic blocks
 etc. with corresponding constraints on which structures they can inspect or
 modify.
-\end{leftbar}
 
 \subsection{Analyse \& Transformationen}
 
