@@ -27,8 +27,8 @@ attempted to allow its use.
 Fiasco uses the \emph{sub-sections} feature specific to the GNU
 assembler~\cite{gas-subsections} in \texttt{/boot\-/ia32\-/boot\_idt.S}, which
 is currently not supported by LLVM. The offending parts were changed to normal
-section statements as recommended by \todo{mentions like this OK?}Adam
-Lackorzyński, which led to new errors upon booting.
+section statements upon recommendation by \bjoern{mentions like this OK?}Adam
+Lackorzyński, which unfortunately led to new errors upon booting.
 
 The documentation on Clang's compatibility with current language standards and
 popular compiler extensions~\cite[Inline assembly]{clang-compatibility}

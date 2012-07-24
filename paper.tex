@@ -7,6 +7,13 @@
 \usepackage{color}
 \usepackage{framed}
 \usepackage{graphicx}
+
+\usepackage[pdftex,
+  pdfauthor={Hermann Loose},
+  pdftitle={Compiler-Generated Control Flow Integrity Checking for Kernel Code},
+  pdfcreator={xelatex}
+]{hyperref}
+
 \usepackage[htt]{hyphenat}
 \usepackage{listings}
 \usepackage{soul}
@@ -20,7 +27,7 @@
 
 \usepackage{url}
 
-\setromanfont{Charis SIL}
+\setmainfont{Charis SIL}
 \setmonofont{Courier 10 Pitch}
 
 \overfullrule=5pt
@@ -28,6 +35,8 @@
 \newcommand{\tobewritten}[2][noinline]{\todo[color=red!60,#1]{#2}}
 \newcommand{\needspolish}[2][noinline]{\todo[color=green!40,#1]{#2}}
 \newcommand{\bjoern}[2][noinline]{\todo[color=blue!60,#1]{#2}}
+
+\title{Compiler-Generated Control Flow Integrity Checking for Kernel Code}
 \author{Hermann Loose}
 
 \begin{document}
@@ -42,11 +51,29 @@
 %\textsc{\Large Großer Beleg}
 %
 %\HRule \\[0.5cm]
-%\LARGE Kontrollflusssignaturen in LLVM
+%\LARGE Compiler-Generated Control Flow Integrity Checking for Kernel Code
 %\HRule \\[0.5cm]
 %
 %\end{center}
 \end{titlepage}
+
+\newpage
+\section*{Eigenständigkeitserklärung}
+
+Hiermit erkläre ich, dass ich diese Arbeit selbstständig erstellt und keine
+anderen als die angegebenen Hilfsmittel benutzt habe.
+
+\bigskip{}
+
+\noindent Dresden, den \needspolish{Datum einfügen}
+
+\vspace{2.5cm}
+
+\noindent \rule{7cm}{0.25pt}
+
+\noindent Hermann Loose
+
+\newpage
 
 \tableofcontents
 

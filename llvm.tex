@@ -23,51 +23,51 @@
 Platform and language agnostic analysis and transformations on LLVM bitcode and
 assembly during optimization are implemented by so-called
 \emph{Passes}~\cite{llvm-passes}. These exist at different granularities,
-handling complete modules, individual functions, loop regions, basic blocks
-etc. with corresponding constraints on which structures they can inspect or
-modify.
+handling \needspolish{more general and explain later?}complete modules,
+components of the callgraph, individual functions, loops, single entry/exit
+regions and basic blocks with corresponding constraints on which structures
+they can inspect or modify or whether state can be kept across invocations.
 
-\subsection{Analyse \& Transformationen}
+This allows the \emph{PassManager} to schedule the execution of multiple passes
+on a module efficiently. Spatial locality is exploited for instance by first
+running all requested \emph{FunctionPasses} on the same function before
+proceeding to the next one.
 
-Analyse und Transformationen von LLVM Bitcode bzw. Assembly im Rahmen der
-Optimierung werden sprach- und plattformunabhängig durch sogenannte
-\emph{Passes}~\cite{llvm-passes} realisiert. Diese werden für bestimmte
-Strukturebenen formuliert, betrachten z.B. komplette Module, einzelne
-Funktionen, Schleifenregionen oder Basic Blocks und unterliegen entsprechenden
-Beschränkungen. So sind im Allgemeinen Modifikationen außerhalb der aktuell
-betrachteten Funktion etc.  verboten, um dem \emph{PassManager} eine möglichst
-effiziente Anwendung der gewünschten Passes auf das gerade bearbeitete Modul zu
-ermöglichen.
+\needspolish{schwurbelig?}While all passes except ModulePass and
+CallGraphSCCPass do not have any guarantees about the order in which they are
+handed functions, basic blocks etc. they can state dependencies on other passes
+guaranteed to be run on the concerning part of the program before execution of
+the requesting pass~\cite[Specifying interactions between
+passes]{writing-passes}. This can be used to provide code analysis, usually
+driving later modifications or to establish certain preconditions needed by
+other passes.
 
-Zur Ausnutzung von örtlicher Lokalität wird dabei z.B. eine Menge von
-\emph{FunctionPass}es zunächst der Reihe nach für eine einzelne Funktion
-ausgeführt, bevor die nächste Funktion betrachtet wird, wobei keine Aussage
-über die Folge der Funktionen getroffen wird.
+Additionally passes have to explicitly state which of the previously executed
+passes they \emph{do not} invalidate. In the absence of this information “all
+passes are assumed to invalidate all others”~\cite[Specifying interactions
+between passes]{writing-passes}. This may hurt performance when ignored, as the
+PassManager will schedule invalidated analyses to be computed again once they
+are needed by subsequent passes.
 
-Passes können Abhängigkeiten zu anderen Passes deklarieren, die z.B. Analysen
-zum aktuell betrachteten Code liefern oder benötigte Vorbedingungen herstellen.
-Zusätzlich müssen Passes explizit angeben, welche eventuell vorangegangenen
-Passes ihre Gültigkeit \emph{behalten}—indem sie betroffene Analysewerte unter
-Umständen selbst aktualisieren—da vom PassManager ansonsten vermeintlich
-ungültig gewordene Analysen erneut durchgeführt werden, was bei Nichtbeachtung
-zu Performanceeinbußen führen kann.
+\todo[inline]{expand}
 
-Die Realisierung eigener Analysen und Transformationen beschränkt sich damit
-auf die Implementierung einer Unterklasse des gewünschten
-Passtyps.~\cite{writing-passes}
+\subsection{Pitfalls in mapping CFCSS to LLVM}
 
-\subsection{Besonderheiten im Bezug auf CFCSS}
+CFCSS is based on a single CFG comprising all functions. Branching instructions
+as well as function calls and returns are control flow transfers that terminate
+a basic block. Consequently edges in the CFG may exist from basic blocks in the
+middle of a function to the first basic block of another function.
 
-CFCSS baut auf einem einzelnen, funktionsübergreifenden Kontrollflussgraphen
-auf. Dabei terminieren sowohl Sprunginstruktionen als auch Funktionsaufrufe und
-zugehörige \todo{ist dieser Sprachmischmasch legitim?}Returns einen Basic
-Block. Kanten im CFG existieren jeweils zwischen Quelle und Ziel, somit auch
-von Basic Blocks in der Mitte einer Funktion zum ersten Basic Block einer
-anderen.
+Normal \texttt{call} instructions in LLVM however do not terminate basic
+blocks~\cite{terminatorinst} \bjoern{evtl. lenkt das zu sehr ab
+/ unwichtig?}(unlike \texttt{invoke} instructions, which might branch to an
+error handler) and the called function does not appear in the set of successors
+of the surrounding basic block, as each function in LLVM has its own separate
+CFG.
 
-\texttt{call}-Instruktionen in LLVM stehen hingegen nicht am Ende eines Basic
-Blocks, zugleich beschränkt sich der CFG jeweils auf die aktuelle Funktion. Als
-Nachfolger eines Basic Blocks tauchen entsprechend nur die möglichen Ziele
-seiner terminierenden Instruktion auf—neben Sprüngen auch in LLVM Assembly
-nativ abgebildete \texttt{switch}-Statements—und keine Basic Blocks von
-aufgerufenen Funktionen.
+\todo{check whether this still holds once work is finished} Upon starting this
+work, \needspolish{holprig?}the above property suggested treating control flow
+within a function separately from control flow occuring between functions.
+Control flow inside a function can clearly be handled by a FunctionPass, while
+control flow between functions might necessitate modifications in both
+functions involved, thus requiring a CallGraphSCCPass or ModulePass.

@@ -1,25 +1,39 @@
-\section{Implementierung}
+\section{Implementation}
 
-Für die Implementierung der \todo{checken, dass die dann auch genannt
-wurden}genannten Passes wurde ein \emph{out-of-source} LLVM-Pro\-jekt außerhalb
-des LLVM-Repository begonnen. Die so erstellten Objektdateien können von
-\texttt{opt} und \texttt{llvm-ld} jeweils mittels der Option
-\texttt{-load=\textit{object-file}} eingebunden und die enthaltenen Passes
-verwendet werden.
+Implementation of the passes described in the previous section was started as
+an \emph{out-of-source} LLVM project outside the LLVM repository. \texttt{opt}
+and \texttt{llvm-ld} can include the generated object files through the
+\texttt{-load=\textit{object-file}} option and use the passes they comprise.
 
-\begin{leftbar}
-  \begin{itemize}
-    \item LLVM-Projekte \emph{out-of-source}
-  \end{itemize}
-\end{leftbar}
+\subsection{Analysis}
+\tobewritten[inline]{fill}
 
-\subsection{Probleme bei der Verwendung von LLVM}
+\paragraph{Detect aliasing}
+\tobewritten{fill}
 
-\begin{leftbar}
-  \begin{itemize}
-    \item LLVM ist ein \emph{optimierender} Compiler
-    \item Annahme: Hardware arbeitet perfekt
-    \item Constant Folding
-    \item Dead Code Elimination
-  \end{itemize}
-\end{leftbar}
+\subsection{Instrumentation}
+\tobewritten[inline]{fill}
+
+\section{Problems in using LLVM}
+
+LLVM's primary purpose is to provide an optimizing compiler. As such it assumes
+hardware to always work correctly. Especially the contents of registers and
+normal memory locations may never unexpectedly change—which is precisely what
+CFCSS anticipates and is looking to mitigate.
+
+As a result, signature updates computing the bitwise XOR of an immediate
+operand and a register whose contents are presumably known at most points in
+time become candidates for \emph{constant folding}. Similarly, CFCSS checking
+code appears to LLVM as a large collection of branches that will never be
+taken, suggesting the use of \emph{dead code elimination}.
+
+There is currently no way to mark certain instructions as off-limits to
+subsequent optimization passes, likely because LLVM is not intended to be used
+in this fashion. On the other hand, proper instrumentation should only add
+instructions that are in fact required for CFCSS, which would eliminate the
+need for further optimization, given cleanly written passes.
+
+\tobewritten[inline]{currently evaluating whether "just not running additional
+passes" will give the desired result reliably}
+
+\tobewritten[inline]{mention LLVM Intrinsics, here or elsewhere}
