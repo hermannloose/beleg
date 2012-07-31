@@ -59,7 +59,7 @@ a basic block. Consequently edges in the CFG may exist from basic blocks in the
 middle of a function to the first basic block of another function.
 
 Normal \texttt{call} instructions in LLVM however do not terminate basic
-blocks~\cite{terminatorinst} \bjoern{evtl. lenkt das zu sehr ab
+blocks~\cite{langref-terminators} \bjoern{evtl. lenkt das zu sehr ab
 / unwichtig?}(unlike \texttt{invoke} instructions, which might branch to an
 error handler) and the called function does not appear in the set of successors
 of the surrounding basic block, as each function in LLVM has its own separate
