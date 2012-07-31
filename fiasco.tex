@@ -64,10 +64,11 @@ that this particular attribute is at the time of writing handled incorrectly by
 Clang—both for constructors and destructors, although only the \todo{verify
 with Adam!}former are of concern with regards to Fiasco—with the corresponding
 bug report, filed December 2011, still pending~\cite{initpriority-bug}. I went
-to explore the usage of LLVM's \emph{global\_ctor} section proposed in the
-original description of the bug. \emph{The following statements
-\needspolish{shorten?}about the handling of constructors in Clang apply equally
-to destructors, whose mention will be omitted for brevity.}
+to explore the usage of LLVM's \emph{global\_ctors}
+array~\cite{langref-globalctors} proposed in the original description of the
+bug. \emph{The following statements \needspolish{shorten?}about the handling of
+constructors in Clang apply equally to destructors, whose mention will be
+omitted for brevity.}
 
 \tobewritten[inline]{explain LLVM global\_ctors?}
 
@@ -102,17 +103,19 @@ bug report.
 
 \tobewritten[inline]{explain my fix in Clang code}
 
+\paragraph{Handling of \url{global\_ctors} in LLVM}
+
 Despite Clang then emitting a useful listing of prioritized constructors into
 each LLVM module, these priorities would still not translate into the expected
-\texttt{.ctors}\todo{should probably describe these sections
-in detail}-sections upon printing assembly for the given platform.
-With \bjoern{language like this OK?}nothing for the linker to pick up in the
-resulting object file, static constructors still ran in the order in which
-translation units were handed to the linker.
+\texttt{.ctors}\todo{should probably describe these sections in
+detail}-sections upon printing assembly for the given platform.  With
+\bjoern{language like this OK?}nothing for the linker to pick up in the
+resulting object file, constructors still ran in the order in which translation
+units were handed to the linker.
 
-I traced this back to erroneous emission of static constructors and destructors
-during LLVM's code generation phase, where information about priorities was
-again lost.
+I traced this back to flawed emission of constructors and destructors from the
+\emph{global\_ctors} and \emph{global\_dtors} arrays during LLVM's code
+generation phase, where information about priorities was again lost.
 
 \tobewritten[inline]{explain LLVM's partly machine-independent code generation
 pass in more detail to set the scene for section switching etc. below – maybe
