@@ -4,19 +4,36 @@
 
 \subsection{Assumptions}
 
+\todo{find a nicer subsection title}
+
 \tobewritten[inline]{fill}
 
 \paragraph{Control-Flow Graph}
 
-\tobewritten{fill}
+CFCSS builds upon a \emph{control-flow graph} whose vertices are so-called
+\emph{basic blocks}: code sequences with linear control flow, terminated by
+branching instructions such as calls, returns and jumps, which in turn define
+edges to other basic blocks in the graph.
+
+\tobewritten[inline]{signature register GSR}
+\tobewritten[inline]{static block signatures}
 
 \paragraph{Branch fan-in nodes}
 
-\tobewritten{fill}
+While the method described works well for linear control flow, what needs
+special treatment are so-called \emph{branch fan-in nodes} that are the target
+of multiple control-flow transfers.
+
+\tobewritten[inline]{introduction of D}
 
 \paragraph{Aliasing}
 
-\tobewritten{fill}
+Using a runtime adjusting signature in that fashion however poses a subtle
+problem for certain control-flow patterns. Take for example XYZ
+
+\tobewritten[inline]{picture \& description}
+\tobewritten[inline]{using Hamming-distance (paper)}
+\tobewritten[inline]{using proxy blocks (my solution)}
 
 \subsection{Existing measurements}
 

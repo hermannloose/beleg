@@ -1,6 +1,6 @@
 \documentclass[11pt,a4paper,draft]{report}
 \usepackage{fontspec}
-\usepackage[top=3cm,left=3.5cm,right=3.5cm,bottom=3cm]{geometry}
+\usepackage[top=3cm,left=2cm,right=5cm,bottom=3cm]{geometry}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -16,25 +16,33 @@
 
 \usepackage[htt]{hyphenat}
 \usepackage{listings}
+\usepackage{relsize}
 \usepackage{soul}
 
 \usepackage[
   colorinlistoftodos,
   obeyDraft,
   textsize=small,
-  textwidth=3cm
+  textwidth=4.5cm
 ]{todonotes}
 
 \usepackage{url}
 
 \setmainfont{Charis SIL}
-\setmonofont{Courier 10 Pitch}
+%\setmonofont{Courier 10 Pitch}
+\setmonofont[Scale=0.9]{Cousine}
+
+\lstset{basicstyle=\ttfamily}
 
 \overfullrule=5pt
 
 \newcommand{\tobewritten}[2][noinline]{\todo[color=red!60,#1]{#2}}
 \newcommand{\needspolish}[2][noinline]{\todo[color=green!40,#1]{#2}}
 \newcommand{\bjoern}[2][noinline]{\todo[color=blue!60,#1]{#2}}
+
+\newcommand{\CPP}{C\nolinebreak\hspace{-0.05em}\raisebox{0.1em}{\relsize{-2}{\textbf{+}}}\nolinebreak\hspace{-0.20em}\raisebox{0.1em}{\relsize{-2}{\textbf{+}}}\hspace{0.15em}}
+
+%\newcommand*{\verbfont}{\normalfont\ttfamily\hyphenchar\font\m@ne\@noligs}
 
 \title{Compiler-Generated Control Flow Integrity Checking for Kernel Code}
 \author{Hermann Loose}
@@ -87,11 +95,15 @@ anderen als die angegebenen Hilfsmittel benutzt habe.
 
 \input{introduction.tex}
 
+\chapter{Related Work}
+
+\input{relatedwork.tex}
+
+\chapter{Design}
+
 \input{cfcss.tex}
 
 \input{llvm.tex}
-
-\chapter{Design}
 
 \input{design.tex}
 

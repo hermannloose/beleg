@@ -49,26 +49,26 @@ The use of the integrated assembler was then discontinued via the
 assembler with which the problematic parts of Fiasco are known to work.
 All modifications made to this point were reverted.
 
-\subsection{Fixing Clang's handling of \url{\_\_attribute\_\_(init\_priority)}}
+\subsection{Fixing Clang's handling of \lstinline{__attribute__(init_priority)}}
 
 With the aforementioned modifications in place, \todo{mention failure to load
-debugging symbols in GDB?}Fiasco still failed to boot. Among the GCC extensions
-to the \needspolish{ugly typography}C++ language used by Fiasco,
-\url{\_\_attribute\_\_(init\_priority(N))} is \needspolish{"extensively"?}used
-in the \bjoern{is this a proper term for it?}process of bootstrapping the
-kernel to ensure proper initialization order of static objects across
-translation units~\cite{gcc-initpriority}.
+debugging symbols in GDB?}Fiasco still failed to boot. Among other GCC
+extensions to the \CPP language, Fiasco uses
+\lstinline{__attribute__(init_priority(N))} in the \bjoern{is this a proper
+term for it?}process of bootstrapping the kernel to ensure proper
+initialization order of static objects across translation
+units~\cite{gcc-initpriority}.
 
 \bjoern{mention that this was actually discovered by Adam \& you?}It emerged
 that this particular attribute is at the time of writing handled incorrectly by
 Clang—both for constructors and destructors, although only the \todo{verify
 with Adam!}former are of concern with regards to Fiasco—with the corresponding
-bug report, filed December 2011, still pending~\cite{initpriority-bug}. I went
-to explore the usage of LLVM's \emph{global\_ctors}
-array~\cite{langref-globalctors} proposed in the original description of the
-bug. \emph{The following statements \needspolish{shorten?}about the handling of
-constructors in Clang apply equally to destructors, whose mention will be
-omitted for brevity.}
+bug report, filed December 2011, \todo{changes in the meantime!}still
+pending~\cite{initpriority-bug}. I went to explore the usage of LLVM's
+\emph{global\_ctors} array~\cite{langref-globalctors} proposed in the original
+description of the bug. \emph{The following statements
+\needspolish{shorten?}about the handling of constructors in Clang apply equally
+to destructors, whose mention will be omitted for brevity.}
 
 \tobewritten[inline]{explain LLVM global\_ctors?}
 
@@ -85,14 +85,14 @@ a translation unit.
 
 \begin{framed}
 
-Note that this behaviour is of limited use, as the C++ standard already
+Note that this behaviour is of limited use, as the \CPP standard already
 mandates non-local variables inside a single translation unit to be initialized
 in the order in which they were declared.
-\emph{\_\_attribute\_\_(init\_priority(N))} as a GCC extension to C++ was
+\emph{\_\_attribute\_\_(init\_priority(N))} as a GCC extension to \CPP was
 specifically devised to solve the problem of ordering initializations across
 translation units~\cite{gcc-initpriority}, which Clang fails to do.
 
-\todo[inline]{cite Stroustrup, I only have the German version handy}
+\todo[inline]{cite the standard}
 \bjoern[inline]{how to best put this?}
 
 \end{framed}

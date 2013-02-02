@@ -53,6 +53,8 @@ are needed by subsequent passes.
 
 \subsection{Pitfalls in mapping CFCSS to LLVM}
 
+\paragraph{Basic-block model}
+
 CFCSS is based on a single CFG comprising all functions. Branching instructions
 as well as function calls and returns are control flow transfers that terminate
 a basic block. Consequently edges in the CFG may exist from basic blocks in the
@@ -71,3 +73,25 @@ within a function separately from control flow occurring between functions.
 Control flow inside a function can clearly be handled by a FunctionPass, while
 control flow between functions might necessitate modifications in both
 functions involved, thus requiring a CallGraphSCCPass or ModulePass.
+
+\paragraph{Register usage}
+
+CFCSS mandates the use of a dedicated register to hold the runtime signature
+for obvious reasons of performance, seeing how often the signature is read and
+updated \todo{cite}given the mean length of basic blocks.
+
+Strictly speaking this need neither be a specific one—\cite{oh-2002-control}
+explicitly states that a general purpose register is fit for the task—nor even
+the same register across the lifetime of a program provided source and target
+basic blocks agree on which one holds the signature during each control-flow
+transfer. This is however contrary to the design of LLVM.
+
+As mentioned earlier, analysis and transformation passes operate on LLVM
+assembly or bitcode in SSA form, with \texttt{load}s and \texttt{store}s
+occuring to either global variables or \needspolish{just: "variables on the
+stack"?}opaque stack locations introduced by \texttt{alloca} instructions,
+which work similar to the former.
+
+During machine code generation, the \emph{register allocation} phase takes care
+
+\tobewritten[inline]{use of specific registers not possible}
