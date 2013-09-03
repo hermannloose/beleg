@@ -11,6 +11,34 @@ passes they comprise.
 \subsection{Preprocessing}
 
 
+\paragraph{Externally visible functions}
+
+Functions that are visible outside the translation unit being processed
+generally cannot reason about their potential set of callers. With no specific
+callers, a signature update cannot be defined in a meaningful way. Even if the
+set of CFCSS-aware callers was known—e.g. determined by an external
+process and passed to the instrumentation stage as a parameter—the possibility
+remains for externally visible functions to be called from code that does not
+know or care about CFCSS. As a result, they cannot rely on the GSR or
+D containing sensible values in these cases.
+
+One option would be to simply not question the validity of the initial control
+flow transfer to the function and use signatures only for control flow within
+the function and any subsequent calls to CFCSS-aware functions. Yet this is
+overly pessimistic in the case of recursive functions, e.g. an instrumented
+\emph{qsort}.
+
+After the initial control flow transfer we would instead like recursive calls
+to be subject to signature checks in order to increase CFCSS coverage for the
+translation unit in question. The containing basic blocks of the respective
+call instructions form a fixed set of CFCSS-aware predecessors for the
+function's entry block, such that a signature update can be defined. The
+problem remains to figure out, upon entering the function, whether it was
+called externally or recursively.
+
+\tobewritten[inline]{gateway functions}
+
+
 \section{Instrumentation}
 
 
