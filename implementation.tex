@@ -1,17 +1,29 @@
-\section{Implementation}
-
 Implementation of the passes described in the previous section was started as
-an \emph{out-of-source} LLVM project outside the LLVM repository. \texttt{opt}
-and \texttt{llvm-ld} can include the generated object files through the
+an \needspolish{probably don't need to mention this}\emph{out-of-source} LLVM
+project outside the LLVM repository. \texttt{opt} can include the generated
+object files through the \texttt{-load=\textit{objectfile}} option and use the
+passes they comprise.
+
+\section{Analysis}
+
 \texttt{-load=\textit{object-file}} option and use the passes they comprise.
 
-\subsection{Analysis}
+\subsection{Preprocessing}
+
+
+\section{Instrumentation}
+
+
+\subsection{Control-flow between functions}
+
+
+\subsection{Control-flow inside functions}
+
 \tobewritten[inline]{fill}
 
 \paragraph{Detect aliasing}
 \tobewritten{fill}
 
-\subsection{Instrumentation}
 \tobewritten[inline]{fill}
 
 \section{Problems in using LLVM}
