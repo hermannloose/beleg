@@ -24,6 +24,16 @@ that?}
 \tobewritten[inline]{function pointers?}
 \tobewritten[inline]{expand}
 
+\paragraph{CFG aliasing}
+
+Branch fan-in nodes can exhibit aliasing as explained in
+\ref{aliasing-explained}. We chose to deal with this by inserting basic blocks
+acting as a proxy on the offending edges in the CFG.  These \needspolish{is
+this a good term?}proxy blocks will not contain actual code apart from the
+signature check and update.
+
+\tobewritten[inline]{statistics on actual use of this}
+\tobewritten[inline]{expand}
 
 \paragraph{Externally visible functions}
 
