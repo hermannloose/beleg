@@ -10,6 +10,20 @@ passes they comprise.
 
 \subsection{Preprocessing}
 
+\paragraph{Call instructions}
+
+As mentioned in \ref{basic-block-model}, normal function calls do not terminate
+basic blocks in LLVM. To allow for easier traversal and uniform handling when
+instrumenting, we split those blocks after a call instruction and associate the
+remainder with the function that was called, for later lookup.
+
+\tobewritten[inline]{can easily be reverted later, but would we actually need
+that?}
+\tobewritten[inline]{does not apply to declarations}
+\tobewritten[inline]{explain gateway functions}
+\tobewritten[inline]{function pointers?}
+\tobewritten[inline]{expand}
+
 
 \paragraph{Externally visible functions}
 
