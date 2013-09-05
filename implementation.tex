@@ -69,6 +69,15 @@ called externally or recursively.
 
 \section{Instrumentation}
 
+To keep the effort of implementation as low as possible, the registers needed
+for CFCSS are modelled using global and local variables in LLVM IR. Most of the
+signature checks will refer to local variables, which can later be promoted to
+virtual registers using the existing \emph{mem2reg} \cite{llvm-passes}
+optimization pass.
+
+Instrumentation is performed by the \emph{InstrumentBasicBlocks} pass.
+
+\tobewritten[inline]{expand}
 
 \subsection{Control-flow inside functions}
 
