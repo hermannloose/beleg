@@ -72,7 +72,34 @@ called externally or recursively.
 
 \subsection{Control-flow inside functions}
 
-\tobewritten[inline]{fill}
+\paragraph{CFCSS registers}
+
+Two new local variables are introduced in every function to hold the GSR and D.
+For this purpose InstrumentBasicBlocks inserts two \texttt{alloca} instructions
+for 64-bit integers into the entry block of each function.  Signature checks
+will refer to these via \texttt{load} and \texttt{store} instructions that can
+later be promoted to \todo{insert link to earlier explanation of SSA in
+LLVM}virtual register \todo{is this the correct term?}references.
+
+\paragraph{Error handling block}
+
+\needspolish{Dopplung und schwurbelig} InstrumentBasicBlocks creates a new
+basic block within each function to serve as the branch target for failed
+signature comparisons. Since this work is focussed on evaluating CFCSS as
+a means of error \emph{detection}, the error handling block will merely signal
+the detected fault by raising an exception.  This is currently implemented as
+a call to inline assembly containing the "undefined" \texttt{ud2}
+instruction—generating an invalid opcode exception—and thus specific to the x86
+architecture, yet it could likely be swapped for either the \texttt{llvm.trap}
+or \texttt{llvm.debugtrap} intrinsics, that generate similar
+instructions\footnote{\texttt{ud2} and \texttt{int3} in the case of x86} in
+a platform-independent manner.
+
+To allow for actual error \emph{handling}, the error handling block could
+instead contain a call to a (possibly user-defined) fault handler, for instance
+resetting the application to an earlier checkpoint, however this is outside the
+scope of this work.
+
 
 \paragraph{Detect aliasing}
 \tobewritten{fill}
