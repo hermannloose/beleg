@@ -1,5 +1,58 @@
 \section{Measurements}
 
+I evaluated the runtime overhead of my approach using the SPEC
+CPU2006~\cite{spec-cpu2006} suite of C/\CPP and Fortran benchmarks. SPEC's
+target config files~\cite{spec-cpu2006-config}, along with a few modifications
+and additions in their global \texttt{Makefile.defaults} file, allow the
+benchmarks to be conveniently built without any further changes both by Clang,
+with or without CFCSS instrumentation, and by GCC for comparison, passing the
+desired configuration to \texttt{runspec} via the \texttt{--config=...} option.
+
+CPU2006 provides the \texttt{OBJOPT} variable and its language-specific
+variants \texttt{COBJOPT}, \texttt{CXXOBJOPT} and \texttt{FOBJOPT} \cite[2.
+Items used in Makefile.defaults]{spec-cpu2006-makevars} for the user to specify
+in a target config file how her compiler can be instructed to give an object
+file an arbitrary name, e.g. \texttt{-o \textit{filename}} in the case of both
+GCC and Clang. \todo{long \& complicated sentence}Although it might slightly
+obscure intent, I use \texttt{OBJOPT} to also pass \texttt{-emit-llvm} to
+\texttt{clang}/\texttt{clang++} in my configurations for Clang with and without
+CFCSS instrumentation—the latter to ensure that compilation results end up
+roughly the same in both cases—in order for the object files to contain LLVM
+bitcode after this step.
+
+I further introduce a \texttt{CFCSS\_INSTRUMENTATION} boolean. In the case of
+it being defined, \texttt{Makefile.defaults} will first run
+\todo{citation}\texttt{llvm-link} to produce a single bitcode module of all
+object files handed to it. It will then run the \texttt{opt} utility with the
+following set of passes\footnote{Documentation for \texttt{simplifycfg} and
+\texttt{mem2reg} can be found in \cite{llvm-passes}.}:
+
+\begin{description}
+  \item[simplifycfg] \cite[simplifycfg]{llvm-passes} to preprocess the module,
+    since dangling basic blocks without predecessors (encountered once during
+    trials of compiling \texttt{libgit2}, for reasons unknown) would throw of
+    instrumentation, see \todo{link}BUG
+  \item[instrument-blocks] if \texttt{CFCSS\_INSTRUMENTATION} is true, to
+    perform CFCSS instrumentation
+  \item[mem2reg] to promote local variable references introduced in the
+    previous step to virtual registers \cite[mem2reg]{llvm-passes}; this
+    \todo{check \& update}should be a no-op if \texttt{CFCSS\_INSTRUMENTATION}
+    was set to \texttt{false}.
+  \item[simplifycfg] \todo{reference}to cancel the effects of previously
+    running SplitAfterCall as part of InstrumentBlocks; this again should be
+    a no-op if CFCSS instrumentation was not requested
+\end{description}
+
+\texttt{gfortran} is still used in the Clang case to \todo{citation as to why
+LLVM has no own front end for this}parse Fortran code, emitting LLVM
+bitcode\footnote{Due to limitations in using GCC with DragonEgg, the
+\texttt{-S} option has to be used with GCC in this case and LLVM bitcode is
+emitted in human-readable form~\cite[DragonEgg in action]{dragonegg}. Although
+this might slow down compilation a little, the overhead is assumed to be
+negligible. Plus if you are using Fortran you probably do not want CFCSS
+anyway.} via the DragonEgg GCC plugin \cite{dragonegg} which is then
+instrumented and turned into a binary like the C/\CPP benchmarks.
+
 \subsection{Performance}
 
 \begin{itemize}
