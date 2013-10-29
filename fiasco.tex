@@ -46,8 +46,9 @@ There were \todo{elaborate}further problems concerning macro expansion in
 
 The use of the integrated assembler was then discontinued via the
 \texttt{-no-integrated-as} option~\cite{manclang} in favour of the GNU
-assembler with which the problematic parts of Fiasco are known to work.
-All modifications made to this point were reverted.
+assembler with which the problematic parts of Fiasco are known to work.  All
+modifications made to this point were reverted.\footnote{The LLVMLinux project
+is currently using the same approach: \url{https://lwn.net/Articles/549203/}}
 
 \subsection{Fixing Clang's handling of \lstinline{__attribute__(init_priority)}}
 
@@ -65,10 +66,11 @@ Clang—both for constructors and destructors, although only the \todo{verify
 with Adam!}former are of concern with regards to Fiasco—with the corresponding
 bug report, filed December 2011, \todo{changes in the meantime!}still
 pending~\cite{initpriority-bug}. I went to explore the usage of LLVM's
-\emph{global\_ctors} array~\cite{langref-globalctors} proposed in the original
-description of the bug. \emph{The following statements
-\needspolish{shorten?}about the handling of constructors in Clang apply equally
-to destructors, whose mention will be omitted for brevity.}
+\emph{global\_ctors} array~\cite[The llvm.global\_ctors global
+variable]{langref} proposed in the original description of the bug. \emph{The
+following statements \needspolish{shorten?}about the handling of constructors
+in Clang apply equally to destructors, whose mention will be omitted for
+brevity.}
 
 \tobewritten[inline]{explain LLVM global\_ctors?}
 
@@ -155,3 +157,6 @@ modifications applied.
 
 \tobewritten[inline]{describe (yet to be done) changes regarding same
 priorities in a translation unit as discovered 30-07-12?}
+
+\todo[inline]{revisit all of the above regarding the use of LLVM 3.3, where
+this is probably fixed}
