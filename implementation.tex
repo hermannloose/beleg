@@ -141,3 +141,26 @@ need for further optimization, given cleanly written passes.
 passes" will give the desired result reliably}
 
 \tobewritten[inline]{mention LLVM Intrinsics, here or elsewhere}
+
+\paragraph{Register allocation}
+
+When not running any further optimization passes after CFCSS instrumentation by
+selecting the \texttt{-O0} optimization level in Clang, inspecting the
+resulting binary with \texttt{objdump} reveals that register allocation in LLVM
+does not in fact have desired effect of always keeping the GSR in a register.
+The runtime signature is spilled to the stack after signature comparison,
+before possibly jumping to the error handler upon mismatch.
+
+I am not entirely sure why this happens. According to an explanatory post on
+the LLVM project blog, LLVM's basic register allocator will assign smaller live
+ranges before larger ones, since the former have higher spill weights than the
+latter. Because GSR and D are always live across the whole basic block until
+the next signature check and update, they may well be allocated last. LLVM's
+greedy register allocator is designed to avoid this and will allocate larger
+live ranges first, yet it is only used on optimized
+builds~\cite{llvm-register-allocation}. Trying to force it to run on
+unoptimized builds via \todo{verify invocation}\texttt{-regalloc=greedy} fails
+with a rather unhelpful error message, explaining that it must not be requested
+for an optimization level of zero.
+
+\tobewritten[inline]{expand}
