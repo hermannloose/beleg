@@ -63,6 +63,29 @@ instrumented and turned into a binary like the C/\CPP benchmarks.
 
 \subsection{Fault Detection}
 
+To verify the expected error detecting capabilities of my CFCSS implementation,
+I developed a tool for the injection of control flow errors, using Intel®
+Pin~\cite{intel-pin}. The classes of faults that can be injected are the ones
+mentioned in \cite[IV. Simulation Results]{oh-2002-control}.
+
+Branch instructions at a given address can be deleted, equivalent to being
+replaced with a NOP instruction. Unconditional branch instructions can be
+inserted at a given address, provided it did refer to a valid instruction of
+the original program before. Branch operand changes are implemented by first
+verifying that the instruction at a given address is indeed a direct branch or
+call, taking the target address, picking a random bit within it and flipping
+it, and lastly inserting a new, direct branch to the resulting address in place
+of the original instruction.
+
+The tool allows limiting the target of any newly inserted branches to
+executable sections of the program, though not necessarily addresses which did
+previously mark the beginning of an instruction. Since branches to other memory
+regions would immediately result in a segmentation fault anyway, they are not
+that relevant for the testing of CFCSS functionality. Performing a new bit flip
+on the original address instead allows the tool to exercise more interesting
+cases without delay, although one has to be aware that the relative frequencies
+of certain error classes will be skewed.
+
 \begin{itemize}
   \item in relation to measurements from original paper
 \end{itemize}
